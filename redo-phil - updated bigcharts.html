@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Stock Ticker</title>
+    <style>
+          .header {
+          padding: 10px 16px;
+          background: #555;
+          color: #f1f1f1;
+          }
+
+          .sticky {
+          position: fixed;
+          top: 0;
+          width: 100%;
+          }
+
+          .sticky + .content {
+          padding-top: 102px;
+          }
+
+    </style>
+  </head>
+
+<div class="header" id="MyHeader">
+  <input type="text" id="MyInput" placeholder="Enter symbol" value="" />
+  <button id="GoFetch" onclick="fetchGraphs()">Enter</button>
+  <button onclick="document.getElementById('MyInput').value = ''">Clear</button>
+</div>
+
+
+
+  <body>
+
+  <script> //use 'Enter' key
+  var inputSymbol = document.getElementById("MyInput");
+  inputSymbol.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+     event.preventDefault();
+     document.getElementById("GoFetch").click();
+    }
+  });
+  </script>
+
+
+  <h2  id="StartHere"></h2>
+
+
+
+  <script>  //on scroll sticky header
+  window.onscroll = function() {myFunction()};
+
+  var header = document.getElementById("MyHeader");
+  var sticky = header.offsetTop;
+
+  function myFunction() {
+    if (window.pageYOffset > sticky) {
+      header.classList.add("sticky");
+    } else {
+      header.classList.remove("sticky");
+    }
+  }
+  </script>
+
+
+
+
+    <script type="text/javascript"> //fetch graphs by appendChild
+    function fetchGraphs() {
+        var x = document.getElementById("MyInput").value;
+        if (x === "") return; // do nothing if empty
+        var tickers = x.split(" ");
+
+
+        var d1 = document.getElementById("StartHere");
+        var child = d1.lastElementChild;
+        while (child) {
+        d1.removeChild(child);
+        child = d1.lastElementChild;
+        }
+
+        for (var index = 0; index < tickers.length; index++) {
+        var newDaily = new Image();
+        var newWeekly = new Image();
+        var newIntra = new Image();
+
+        newDaily.src = "http://elite.finviz.com/chart.ashx?t="+tickers[index]+"&ty=c&ta=st_o,sch_200p,ema_3,bb_20_2,ema_8,sma2_50,sma2_200,stosl_a_5_1,macd_b_12_26_9&p=d&s=l";
+          newDaily.float = "left";
+          newDaily.width = 700;
+        newWeekly.src = "http://c.stockcharts.com/c-sc/sc?s="+tickers[index]+"&p=w&yr=5&mn=0&dy=0&i=p26221064662&r=1423458257156";
+            newWeekly.float = "top right";
+            newWeekly.width = "500";
+        newIntra.src = "https://api.wsj.net/api/kaavio/charts/big.chart?nosettings=1&symb="+tickers[index]+"&uf=0&type=2&size=2&sid=5041988&style=320&freq=7&entitlementtoken=0c33378313484ba9b46b8e24ded87dd6&time=3&rand=805286436&compidx=&ma=0&maval=9&lf=1&lf2=0&lf3=0&height=335&width=579&mocktick=1";
+          newIntra.float = "bottom right";
+          newIntra.width = "450";
+
+
+        var CrTable = document.createElement("table");
+        CrTable.id = "FirstTable"+index;
+        d1.appendChild(CrTable);
+              var d2 = document.getElementById("FirstTable"+index);
+
+        var CrRow = document.createElement("tr");
+        CrRow.id = "FirstRow"+index;
+        d2.appendChild(CrRow);
+              var d3 = document.getElementById("FirstRow"+index);
+
+        var CrData = document.createElement("td");
+        CrData.id = "FirstData"+index;
+        d3.appendChild(CrData);
+              var d4 = document.getElementById("FirstData"+index);
+
+        d4.appendChild(newDaily);
+        d3.appendChild(newIntra);
+        d3.appendChild(newWeekly);
+
+
+        var br = document.createElement("br");
+        d1.appendChild(br);
+        }
+    }
+    </script>
+
+
+
+
+
+  </body>
+</html>
